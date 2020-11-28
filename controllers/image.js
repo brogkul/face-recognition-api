@@ -1,29 +1,34 @@
-const Clarifai = require('clarifai')
+const Clarifai = require('clarifai');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 const app = new Clarifai.App({
-  apiKey: 'yourAPI'
-})
+	apiKey: process.env.CLARIFAI_API,
+});
 
 const handleApi = (req, res) => {
-  app.models.predict(Clarifai.FACE_DETECT_MODEL, req.body.input)
-    .then(data => {
-      res.json(data)
-    })
-    .catch(err => res.status(400).json('Unable to fetch API'))
-}
+	app.models
+		.predict(Clarifai.FACE_DETECT_MODEL, req.body.input)
+		.then((data) => {
+			res.json(data);
+		})
+		.catch((err) => res.status(400).json('Unable to fetch API'));
+};
 
 const handleImage = (req, res, db) => {
-  const {id} = req.body;
-  db('users').where('id', '=', id)
-  .increment('entries', 1)
-  .returning('entries')
-  .then(entries => {
-    res.json(entries[0])
-  })
-  .catch(err => res.status(400).json('Unable to get entries'))
-}
+	const { id } = req.body;
+	db('users')
+		.where('id', '=', id)
+		.increment('entries', 1)
+		.returning('entries')
+		.then((entries) => {
+			res.json(entries[0]);
+		})
+		.catch((err) => res.status(400).json('Unable to get entries'));
+};
 
 module.exports = {
-  handleImage,
-  handleApi
+	handleImage,
+	handleApi,
 };
