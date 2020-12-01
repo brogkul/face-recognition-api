@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcrypt-nodejs');
 const knex = require('knex');
+const morgan = require('morgan');
 
 const register = require('./controllers/register');
 const signin = require('./controllers/signin');
@@ -10,18 +11,14 @@ const image = require('./controllers/image');
 
 const db = knex({
 	client: 'pg',
-	connection: {
-		host: '127.0.0.1',
-		user: 'brogkul',
-		password: '',
-		database: 'face_recognition',
-	},
+	connection: process.env.POSTGRES_URI,
 });
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
+app.use(morgan('combined'));
 
 app.get('/', (req, res) => {
 	res.send('working');
